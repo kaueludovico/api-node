@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = 'my-secret-key'
 const port = 3000
 
 app.use (express.json())
@@ -17,11 +19,11 @@ app.post('/register', async (req, res) => {
   }
 
   // Dei uma empolgada e coloquei criptografia na senha <3
-  const hashedPassword = await bcrypt.hash(password, 10)
+  //const hashedPassword = await bcrypt.hash(password, 10)
 
 
   const id = users.length + 1
-  const user = {id, name, email, password: hashedPassword}
+  const user = {id, name, email, password}
   users.push(user);
 
   res.status(201).json({message: 'Usuario cadastrado com sucesso'})
@@ -35,13 +37,15 @@ app.post('/login', async (req, res) => {
     return res.status(401).send('Email ou senha invalidos.');
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password)
-  if (!passwordMatch) {
-    return res.status(401).send('Email ou senha invalidos.')
-  }
+  // const passwordMatch = await bcrypt.compare(password, user.password)
+  // if (!passwordMatch) {
+  //   return res.status(401).send('Email ou senha invalidos.')
+  // }
 
+  //const token = jwt.sign({ od: user.id }, JWT_SECRET, {expiresIn: '1h'})
   res.status(200).json({message: 'Logado com sucesso.'})
 })
+
 
 app.listen(port, ()=> {
   //deixei esse console so para desencargo.
